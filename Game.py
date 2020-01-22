@@ -63,8 +63,8 @@ while not gameOver:
     print()
 
     
-    if env.day >= 7:
-        print("7 days to die!")
+    if env.day >= 8:
+        print("8 days to die!")
         print("game is over")
         gameOver=True
 
