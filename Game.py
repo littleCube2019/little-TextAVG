@@ -1,18 +1,10 @@
 import random
+import character as ch
 
 def clearScreen():  # 換場景時使用
     for i in range(100):
         print("\n")
         
-class character():  # 紀錄角色狀態(新增攻擊力)
-
-     def __init__(self,name,hp,atk,deff):
-        self.name = name
-        self.hp = hp
-        self.atk = atk
-        self.deff = deff
-
-
 
 class environment():  # 紀錄環境狀態
     
@@ -21,7 +13,6 @@ class environment():  # 紀錄環境狀態
     
     def oneDayPass(self):
         self.day += 1
-
 
 
 def showState(inCharacter,inEnv): # 顯示狀態
@@ -78,11 +69,11 @@ DAY = 7
 
 gameOver = False
 
-player = character("brad",100,10,1)
+player = ch.character(ch.chData["mainCharacter"])
 
-littleZombie = character("littleZombie",50,5,0)  # 小僵僵數值(新增)
+littleZombie = ch.character(ch.chData["littleZombie"])
 
-bloodMoonDay = random.randint(2,DAY)  # 血月(新增)
+bloodMoonDay = random.randint(2,DAY)  
 
 env = environment()
 
