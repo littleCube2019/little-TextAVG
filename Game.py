@@ -1,60 +1,43 @@
 import random
 import character as ch
+import environment as env
+
+# varibal list ====================================
+eventList = {
+    "normalDay":("Go to sleep","Do nothing"),        
+    "bloodMoonDay":("Attack","Run"),
+}        
+
+# varibal list ====================================
+
+def choice(event):
+    while 1:
+        print("what do you want to do now?\n")
+        choiceRange = set()
+    
+
+        for num,option in enumerate(eventList[event]):
+            print("{}. {}".format(num+1,option))
+            choiceRange |= {str(num+1)}
+
+        choice = input()
+
+        if choice in choiceRange:
+            return choice
+            
+        for i in range(100):
+            print()  #clean screen
+        print("invalid,please choice again!")
+        
 
 def clearScreen():  # 換場景時使用
     for i in range(100):
         print("\n")
-        
-
-class environment():  # 紀錄環境狀態
-    
-    def __init__(self):
-        self.day = 1
-    
-    def oneDayPass(self):
-        self.day += 1
 
 
 def showState(inCharacter,inEnv): # 顯示狀態
     print("Today is day {}".format(inEnv.day))
     print("Player: {} \nhp: {}".format(inCharacter.name, inCharacter.hp))
-    
-
-def chooseAction(): # 選擇行動
-    choice = 0
-    if not bloodMoon:
-        choice = normalDay()
-    elif bloodMoon:
-        choice = bloodDay()
-    return choice
-    
-
-def normalDay():
-    choice = 0
-    while 1:
-            print("what do you want to do now?\n")
-            print("1 Go to sleep")
-            print("2 Do nothing")
-            choice = input()
-            if choice == "1" or choice == "2":
-                return choice
-            else:
-                clearScreen()
-                print("invalid,please choice again!")
-
-def bloodDay():
-    choice = 0
-    while 1:
-            print("What do you want to do now?\n")
-            print("1 Attact")
-            print("2 Run")
-            choice = input()
-            if choice == "1" or choice == "2":
-                return choice
-            else:
-                clearScreen()
-                print("invalid,please choice again!")
-
 
 def doDamage(aAtk,bDeff):
     damage = aAtk*random.randint(1,2)-bDeff
@@ -62,50 +45,27 @@ def doDamage(aAtk,bDeff):
         return 0
     else:
         return damage
-
-
-
-DAY = 7
-
+# varibal list ====================================
 gameOver = False
 
 player = ch.character(ch.chData["mainCharacter"])
 
 littleZombie = ch.character(ch.chData["littleZombie"])
 
-bloodMoonDay = random.randint(2,DAY)  
+env = env.environment()
 
-env = environment()
-
-bloodMoon = False
-
-
+# varibal list ====================================
 while not gameOver:
-    
-    
-    if env.day == bloodMoonDay:
-        bloodMoon = True
-    elif env.day!=bloodMoonDay:
-        bloodMoon = False
-    if not bloodMoon:
-        showState(player, env)
-        ans = chooseAction()
-        clearScreen()
-        if ans == "1":
-            env.oneDayPass()
-            print("One day just passed")
-        else:
-            print("You do nothing~")
-        print()
+    showState(player, env)
 
-    if bloodMoon: # 跟little zombie戰鬥(新增)
-        showState(player, env)
+    if env.isBloodMoon(): 
         print("\nToday is BLOODMOON!!!\n")
         while player.hp > 0 and littleZombie.hp > 0:
             print("There is a little zombie in your house")
             print("little zombie HP:{}".format(littleZombie.hp))
             print("your HP:{}".format(player.hp))
-            ans = chooseAction()
+                  
+            ans = choice("bloodMoonDay")
             if ans == "1":
                 clearScreen()
                 damage = doDamage(player.atk,littleZombie.deff)
@@ -122,15 +82,20 @@ while not gameOver:
                 player.hp -= damage
         if player.hp <= 0:
             print("you die\n")
-            gameOver=True
+            break     #game is over
         elif littleZombie.hp <= 0:
             print("you kill the little zombie\n")
-            env.oneDayPass()
+    
+    ans = choice("normalDay")
+    clearScreen()
+    if ans == "1":
+        env.oneDayPass()
+        print("One day just passed")
+    else:
+        print("You do nothing~")
+        print()
         
-            
-
-
-    if env.day >= 7:
+    if env.day >= env.endDay:
         print("7 days to die!")
         print("game is over")
         gameOver = True
